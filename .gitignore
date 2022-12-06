@@ -133,6 +133,9 @@ _TeamCity*
 # DotCover is a Code Coverage Tool
 *.dotCover
 
+# Rider is a .NET IDE
+.idea
+
 # AxoCover is a Code Coverage Tool
 .axoCover/*
 !.axoCover/settings.json

@@ -1,0 +1,28 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NetCode", "NetCode\NetCode.csproj", "{3B50FE16-4FA2-4B52-B659-CCD336EED494}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NetCode.UnitTests", "NetCode.UnitTests\NetCode.UnitTests.csproj", "{69A08C88-D01F-4993-BD77-11AEF581BE5B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NetCode.Benchmarks", "NetCode.Benchmarks\NetCode.Benchmarks.csproj", "{05155866-8696-4C51-88DF-838EF4A38988}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{3B50FE16-4FA2-4B52-B659-CCD336EED494}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3B50FE16-4FA2-4B52-B659-CCD336EED494}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3B50FE16-4FA2-4B52-B659-CCD336EED494}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3B50FE16-4FA2-4B52-B659-CCD336EED494}.Release|Any CPU.Build.0 = Release|Any CPU
+		{69A08C88-D01F-4993-BD77-11AEF581BE5B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{69A08C88-D01F-4993-BD77-11AEF581BE5B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{69A08C88-D01F-4993-BD77-11AEF581BE5B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{69A08C88-D01F-4993-BD77-11AEF581BE5B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{05155866-8696-4C51-88DF-838EF4A38988}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{05155866-8696-4C51-88DF-838EF4A38988}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{05155866-8696-4C51-88DF-838EF4A38988}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{05155866-8696-4C51-88DF-838EF4A38988}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
