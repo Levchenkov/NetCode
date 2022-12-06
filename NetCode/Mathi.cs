@@ -1,4 +1,5 @@
-﻿using System.Runtime.CompilerServices;
+﻿using System.Numerics;
+using System.Runtime.CompilerServices;
 
 namespace NetCode;
 
@@ -21,5 +22,11 @@ public static class Mathi
     {
         int quotient = left / right;
         return (quotient, left - (quotient * right));
+    }
+    
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static int BitsRequired(uint range)
+    {
+        return range == 0 ? 1 : BitOperations.Log2(range) + 1;
     }
 }
