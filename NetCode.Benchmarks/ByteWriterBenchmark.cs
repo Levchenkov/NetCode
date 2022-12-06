@@ -53,6 +53,22 @@ public class ByteWriterBenchmark
     }
 
     [Benchmark]
+    public byte[] Shift()
+    {
+        var index = 0;
+        
+        for (int i = 0; i < 255; i++)
+        {
+            _array[index++] = (byte)(i);
+            _array[index++] = (byte)(i >> 8);
+            _array[index++] = (byte)(i >> 16);
+            _array[index++] = (byte)(i >> 24);
+        }
+
+        return _array;
+    }
+
+    [Benchmark]
     public int ByteWriter()
     {
         _byteWriter.Clear();

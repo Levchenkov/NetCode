@@ -61,6 +61,26 @@ public class ByteReaderBenchmark
     }
 
     [Benchmark]
+    public int Shift()
+    {
+        var s = 0;
+        int index = 0;
+
+        for (int i = 0; i < 255; i++)
+        {
+            int value = _array[index++];
+            value |= _array[index++] << 8;
+            value |= _array[index++] << 16;
+            value |= _array[index++] << 24;
+            
+            s += value;
+        }
+        
+        return s;
+    }
+    
+
+    [Benchmark]
     public int ByteReader()
     {
         var s = 0;
