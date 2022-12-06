@@ -3,7 +3,7 @@ using System.Runtime.CompilerServices;
 
 namespace NetCode;
 
-public class ByteReader
+public class ByteReader : IByteReader
 {
     private byte[] _data;
     private int _capacity;

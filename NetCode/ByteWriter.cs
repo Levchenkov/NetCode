@@ -3,7 +3,7 @@ using System.Runtime.CompilerServices;
 
 namespace NetCode;
 
-public sealed class ByteWriter
+public sealed class ByteWriter : IByteWriter
 {
     private const int DefaultCapacity = 1500;
 
