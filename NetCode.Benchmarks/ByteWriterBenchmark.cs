@@ -9,15 +9,15 @@ namespace NetCode.Benchmarks;
 /// [Host]     : .NET 6.0.0 (6.0.21.52210), X64 RyuJIT
 /// DefaultJob : .NET 6.0.0 (6.0.21.52210), X64 RyuJIT
 /// 
-///  |           Method |       Mean |    Error |   StdDev | Ratio | RatioSD |
-/// |----------------- |-----------:|---------:|---------:|------:|--------:|
-/// | BinaryPrimitives |   324.3 ns |  1.35 ns |  1.26 ns |  1.00 |    0.00 |
-/// |       ByteWriter |   329.9 ns |  1.53 ns |  1.43 ns |  1.02 |    0.01 |
-/// |        BitWriter |   337.2 ns |  1.52 ns |  1.43 ns |  1.04 |    0.00 |
-/// |     BinaryWriter | 2,336.4 ns | 12.93 ns | 12.09 ns |  7.20 |    0.06 |
-/// 
+/// |           Method |       Mean |    Error |   StdDev | Ratio | RatioSD | Allocated |
+/// |----------------- |-----------:|---------:|---------:|------:|--------:|----------:|
+/// | BinaryPrimitives |   325.7 ns |  1.39 ns |  1.30 ns |  1.00 |    0.00 |         - |
+/// |       ByteWriter |   330.3 ns |  1.67 ns |  1.48 ns |  1.01 |    0.01 |         - |
+/// |        BitWriter |   338.0 ns |  1.69 ns |  1.58 ns |  1.04 |    0.00 |         - |
+/// |     BinaryWriter | 2,344.7 ns | 12.08 ns | 10.71 ns |  7.20 |    0.03 |         - |
 /// 
 /// </summary>
+[MemoryDiagnoser]
 public class ByteWriterBenchmark
 {
     private ByteWriter _byteWriter;

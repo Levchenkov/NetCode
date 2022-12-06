@@ -9,15 +9,15 @@ namespace NetCode.Benchmarks;
 /// [Host]     : .NET 6.0.0 (6.0.21.52210), X64 RyuJIT
 /// DefaultJob : .NET 6.0.0 (6.0.21.52210), X64 RyuJIT
 /// 
-/// |           Method |       Mean |   Error |  StdDev | Ratio | RatioSD |
-/// |----------------- |-----------:|--------:|--------:|------:|--------:|
-/// | BinaryPrimitives |   324.5 ns | 1.26 ns | 1.18 ns |  1.00 |    0.00 |
-/// |       ByteReader |   326.4 ns | 1.32 ns | 1.24 ns |  1.01 |    0.01 |
-/// |        BitReader |   453.1 ns | 1.35 ns | 1.13 ns |  1.40 |    0.01 |
-/// |     BinaryReader | 1,162.4 ns | 5.82 ns | 5.45 ns |  3.58 |    0.02 |
-/// 
+/// |           Method |       Mean |   Error |  StdDev | Ratio | RatioSD | Allocated |
+/// |----------------- |-----------:|--------:|--------:|------:|--------:|----------:|
+/// | BinaryPrimitives |   328.4 ns | 1.24 ns | 1.10 ns |  1.00 |    0.00 |         - |
+/// |       ByteReader |   329.4 ns | 1.71 ns | 1.60 ns |  1.00 |    0.01 |         - |
+/// |        BitReader |   457.8 ns | 1.09 ns | 0.91 ns |  1.39 |    0.01 |         - |
+/// |     BinaryReader | 1,205.8 ns | 6.75 ns | 6.31 ns |  3.67 |    0.02 |         - |
 /// 
 /// </summary>
+[MemoryDiagnoser]
 public class ByteReaderBenchmark
 {
     private ByteReader _byteReader;
