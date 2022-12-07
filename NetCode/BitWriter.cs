@@ -77,6 +77,8 @@ public sealed class BitWriter : IBitWriter
         }
     }
 
+    public void Write(bool value) => WriteBits(1, value ? 1u : 0u);
+
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void Write(byte value)
     {

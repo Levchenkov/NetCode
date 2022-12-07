@@ -9,6 +9,8 @@ public interface IBitReader
     void Reset();
     
     uint ReadBits(int bitCount);
+
+    bool ReadBool();
     
     byte ReadByte();
     

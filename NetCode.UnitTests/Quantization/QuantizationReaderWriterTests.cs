@@ -1,4 +1,5 @@
 ﻿using FluentAssertions;
+using NetCode.Limits;
 using Xunit;
 
 namespace NetCode.UnitTests.Quantization;

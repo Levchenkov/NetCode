@@ -56,26 +56,6 @@ public class LimitProfile<T>
     }
 }
 
-public readonly struct FloatLimit
-{
-    public readonly float Min;
-    
-    public readonly float Delta;
-
-    public readonly uint MaxIntegerValue;
-
-    public readonly int NumberOfBits;
-    
-    public FloatLimit(float min, float max, float precision)
-    {
-        Min = min;
-        Delta = max - min;
-        float values = Delta / precision;
-        MaxIntegerValue = (uint)Math.Ceiling(values);
-        NumberOfBits = Mathi.BitsRequired(MaxIntegerValue);
-    }
-} 
-
 public static class C
 {
     public static Action<T, TProperty> GetSetter<T, TProperty>(Expression<Func<T, TProperty>> expression)
