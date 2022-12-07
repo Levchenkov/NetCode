@@ -2,7 +2,7 @@ using System.Runtime.CompilerServices;
 
 namespace NetCode;
 
-public class BitWriter : IBitWriter
+public sealed class BitWriter : IBitWriter
 {
     private const int DefaultCapacity = 1500;
     

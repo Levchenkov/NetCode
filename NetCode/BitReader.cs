@@ -2,7 +2,7 @@ using System.Runtime.CompilerServices;
 
 namespace NetCode;
 
-public class BitReader : IBitReader
+public sealed class BitReader : IBitReader
 {
     private static readonly uint[] Masks;
     
