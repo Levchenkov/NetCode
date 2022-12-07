@@ -10,7 +10,7 @@ public class QuantizationReaderWriterTests
     {
         var floatLimit = new FloatLimit(50f, 200f, 0.1f);
         var array = new byte[100];
-        var writer = new QuantizationBitWriter(array);
+        var writer = new BitWriter(array);
 
         writer.Write(100, 50, 200);
         writer.Write(100f, floatLimit);
@@ -18,7 +18,7 @@ public class QuantizationReaderWriterTests
 
         var data = writer.Array;
 
-        var reader = new QuantizationBitReader(data);
+        var reader = new BitReader(data);
         reader.ReadInt(50, 200).Should().Be(100);
         reader.ReadFloat(floatLimit).Should().BeApproximately(100f, 0.1f);
     }

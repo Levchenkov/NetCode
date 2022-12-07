@@ -20,4 +20,40 @@ public static class BitReaderExtensions
     {
         return new Vector3(reader.ReadFloat(), reader.ReadFloat(), reader.ReadFloat());
     }
+    
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static int ReadInt(this BitReader reader, int min, int max)
+    {
+        if (min > max)
+        {
+            ThrowHelper.ThrowArgumentException();
+        }
+        
+        var range = max - min;
+        var bitsRequired = Mathi.BitsRequired((uint)range);
+        var value = (int)reader.ReadBits(bitsRequired);
+        return value + min;
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static float ReadFloat(this BitReader reader, float min, float max, float precision)
+    {
+        if (min > max)
+        {
+            ThrowHelper.ThrowArgumentException();
+        }
+        
+        var result = reader.ReadFloat(new FloatLimit(min, max, precision));
+
+        return result;
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static float ReadFloat(this BitReader reader, FloatLimit limit)
+    {
+        uint integerValue = reader.ReadBits(limit.NumberOfBits);
+        float normalizedValue = integerValue / (float)limit.MaxIntegerValue;
+
+        return normalizedValue * limit.Delta + limit.Min;
+    }
 }

@@ -7,7 +7,7 @@ public class QuantizationBitWriterTests
     [Fact]
     public void T()
     {
-        var bitWriter = new QuantizationBitWriter();
+        var bitWriter = new BitWriter();
         
         // positive
         bitWriter.Write(1, 0, 10);
