@@ -2,11 +2,11 @@ namespace NetCode.Limits;
 
 public sealed class IntLimit
 {
-    public int Min { get; }
-    
-    public int Max { get; }
-    
-    public int BitCount { get; }
+    public readonly int Min;
+
+    public readonly int Max;
+
+    public readonly int BitCount;
 
     public IntLimit(int min, int max)
     {

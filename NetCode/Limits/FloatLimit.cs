@@ -2,17 +2,17 @@
 
 public sealed class FloatLimit
 {
-    public float Min { get; }
-    
-    public float Max { get; }
-    
-    public float Precision { get; }
-    
-    public float Delta { get; }
+    public readonly float Min;
 
-    public uint MaxIntegerValue { get; }
+    public readonly float Max;
 
-    public int BitCount { get; }
+    public readonly float Precision;
+
+    public readonly float Delta;
+
+    public readonly uint MaxIntegerValue;
+
+    public readonly int BitCount;
     
     public FloatLimit(float min, float max, float precision)
     {

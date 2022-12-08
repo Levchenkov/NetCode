@@ -2,15 +2,15 @@ namespace NetCode.Limits;
 
 public sealed class Vector3Limit
 {
-    public float Precision { get; }
-    
-    public float PrecisionSquare { get; }
+    public readonly float Precision;
 
-    public FloatLimit X { get; }
-    
-    public FloatLimit Y { get; }
-    
-    public FloatLimit Z { get; }
+    public readonly float PrecisionSquare;
+
+    public readonly FloatLimit X;
+
+    public readonly FloatLimit Y;
+
+    public readonly FloatLimit Z;
 
     public Vector3Limit(FloatLimit x, FloatLimit y, FloatLimit z)
     {
