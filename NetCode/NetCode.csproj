@@ -27,8 +27,4 @@
         <PackageReference Include="System.Memory" Version="4.5.5" />
     </ItemGroup>
 
-    <ItemGroup>
-      <Folder Include="Quantization" />
-    </ItemGroup>
-
 </Project>
