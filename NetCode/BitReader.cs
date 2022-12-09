@@ -117,7 +117,7 @@ public sealed class BitReader : IBitReader
     }
     
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public uint ReadUint()
+    public uint ReadUInt()
     {
         if (_bitsInBuffer == 0)
         {

@@ -35,7 +35,7 @@ public static class BitWriterVector3Extensions
     }
     
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static void WriteDiffIfChanged(this BitWriter writer, Vector3 baseline, Vector3 updated)
+    public static void WriteValueIfChanged(this BitWriter writer, Vector3 baseline, Vector3 updated)
     {
         var diff = updated - baseline;
         if (diff.Length() < BitWriterFloatExtensions.DefaultFloatPrecision)
@@ -45,22 +45,7 @@ public static class BitWriterVector3Extensions
         else
         {
             writer.Write(true);
-            writer.Write(diff);
-        }
-    }
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static void WriteDiffIfChanged(this BitWriter writer, Vector3 baseline, Vector3 updated, Vector3Limit diffLimit)
-    {
-        var diff = updated - baseline;
-        if (diff.Length() < diffLimit.Precision)
-        {
-            writer.Write(false);
-        }
-        else
-        {
-            writer.Write(true);
-            writer.Write(diff, diffLimit);
+            writer.Write(updated);
         }
     }
 

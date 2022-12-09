@@ -47,7 +47,7 @@ public static class BitWriterFloatExtensions
     }
     
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static void WriteDiffIfChanged(this BitWriter writer, float baseline, float updated)
+    public static void WriteValueIfChanged(this BitWriter writer, float baseline, float updated)
     {
         var diff = updated - baseline;
         if (Math.Abs(diff) < DefaultFloatPrecision)
@@ -57,22 +57,7 @@ public static class BitWriterFloatExtensions
         else
         {
             writer.Write(true);
-            writer.Write(diff);
-        }
-    }
-    
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static void WriteDiffIfChanged(this BitWriter writer, float baseline, float updated, FloatLimit diffLimit)
-    {
-        var diff = updated - baseline;
-        if (Math.Abs(diff) < diffLimit.Precision)
-        {
-            writer.Write(false);
-        }
-        else
-        {
-            writer.Write(true);
-            writer.Write(diff, diffLimit);
+            writer.Write(updated);
         }
     }
     

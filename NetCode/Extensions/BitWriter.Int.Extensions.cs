@@ -31,22 +31,6 @@ public static class BitWriterIntExtensions
         
         writer.WriteBits(limit.BitCount, (uint)(value - limit.Min));
     }
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static void WriteDiffIfChanged(this BitWriter writer, int baseline, int updated)
-    {
-        if (baseline.Equals(updated))
-        {
-            writer.Write(false);
-        }
-        else
-        {
-            writer.Write(true);
-            
-            var diff = updated - baseline;
-            writer.Write(diff);
-        }
-    }
     
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void WriteValueIfChanged(this BitWriter writer, int baseline, int updated)
@@ -59,22 +43,6 @@ public static class BitWriterIntExtensions
         {
             writer.Write(true);
             writer.Write(updated);
-        }
-    }
-    
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static void WriteDiffIfChanged(this BitWriter writer, int baseline, int updated, IntLimit diffLimit)
-    {
-        if (baseline.Equals(updated))
-        {
-            writer.Write(false);
-        }
-        else
-        {
-            writer.Write(true);
-            
-            var diff = updated - baseline;
-            writer.Write(diff, diffLimit);
         }
     }
     

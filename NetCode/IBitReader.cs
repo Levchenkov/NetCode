@@ -18,7 +18,7 @@ public interface IBitReader
     
     short ReadShort();
     
-    uint ReadUint();
+    uint ReadUInt();
     
     int ReadInt();
 }
