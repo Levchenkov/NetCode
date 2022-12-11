@@ -67,26 +67,3 @@ public static class Mathi
             (IntPtr)(int)((value * 0x07C4ACDDu) >> 27));
     }
 }
-
-public static class Mathf
-{
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static float Clamp(float value, float min, float max)
-    {
-        if (min > max)
-        {
-            ThrowHelper.ThrowArgumentException();
-        }
-
-        if (value < min)
-        {
-            return min;
-        }
-        else if (value > max)
-        {
-            return max;
-        }
-
-        return value;
-    }
-}
