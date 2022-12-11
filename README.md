@@ -23,6 +23,24 @@ Console.WriteLine(value); // output: 5
 Console.WriteLine(Convert.ToString(value, 2)); // output: 101
 ```
 
+##### Quantization:
+
+```csharp
+var bitWriter = new BitWriter();
+bitWriter.Write(value: 1f, min: 0f, max: 10f, precision: 0.1f);
+Console.WriteLine(bitWriter.BitsCount); // 7
+        
+bitWriter.Flush();
+Console.WriteLine(bitWriter.BitsCount); // 8
+
+var data = bitWriter.Array;
+var bitReader = new BitReader(data);
+var value = bitReader.ReadFloat(min: 0f, max: 10f, precision: 0.1f);
+
+Console.WriteLine(Math.Abs(value - 1f) < 0.1f); // True
+Console.WriteLine(value); // 1
+```
+
 ##### Use alloc-free binary serialization and deserialization:
 ```csharp
 record Data(byte Byte, short Short, int Int, long Long);
