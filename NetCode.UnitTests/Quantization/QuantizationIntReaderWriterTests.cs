@@ -121,7 +121,7 @@ public class QuantizationIntReaderWriterTests
     
     [InlineData(-10, -5, 5)]
     [InlineData(10, -5, 5)]
-    public void WriteInt_ValueOutOfLimitRangeForRelease_ExceptionExpected(int value, int min, int max)
+    public void WriteInt_ValueOutOfLimitRangeForRelease_ShouldNotThrow(int value, int min, int max)
     {
 #if DEBUG
         return;
