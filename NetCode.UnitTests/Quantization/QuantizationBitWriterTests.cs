@@ -51,5 +51,6 @@ public class QuantizationBitWriterTests
         
         bitWriter.Write(-1, 0, -1);
         bitWriter.Write(0, 0, -1);
+        
     }
 }

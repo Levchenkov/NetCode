@@ -9,13 +9,6 @@ public static class BitWriterIntExtensions
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void Write(this BitWriter writer, int value, int min, int max)
     {
-#if DEBUG
-        if (value < min || value > max)
-        {
-            ThrowHelper.ThrowArgumentOutOfRangeException();
-        }
-#endif
-        
         writer.Write(value, new IntLimit(min, max));
     }
     

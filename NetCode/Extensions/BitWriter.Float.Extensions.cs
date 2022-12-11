@@ -20,13 +20,6 @@ public static class BitWriterFloatExtensions
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void Write(this BitWriter writer, float value, float min, float max, float precision)
     {
-#if DEBUG
-        if (value < min || value > max)
-        {
-            ThrowHelper.ThrowArgumentOutOfRangeException();
-        }
-#endif
-        
         writer.Write(value, new FloatLimit(min, max, precision));
     }
     
