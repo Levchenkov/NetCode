@@ -1,9 +1,8 @@
-﻿using System.Numerics;
-using System.Runtime.CompilerServices;
+﻿using System.Runtime.CompilerServices;
 
 namespace NetCode;
 
-public static class ByteReaderExtensions
+public static class ByteReaderFloatExtensions
 {
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static float ReadFloat(this ByteReader reader)
@@ -13,11 +12,5 @@ public static class ByteReaderExtensions
 #else
         return BitConverter.Int32BitsToSingle(reader.ReadInt());
 #endif
-    }
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static Vector3 ReadVector3(this ByteReader reader)
-    {
-        return new Vector3(reader.ReadFloat(), reader.ReadFloat(), reader.ReadFloat());
     }
 }

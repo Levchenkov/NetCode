@@ -64,7 +64,13 @@ public sealed class BitReader : IBitReader
         _bitsInBuffer -= bitCount;
         return value;
     }
-    
+
+    public bool ReadBool()
+    {
+        var bits = ReadBits(1);
+        return bits == 1;
+    }
+
     private void FillBuffer(int bitCount)
     {
         (ulong temp, int readBytes) = _byteReader.TryReadUInt();
@@ -111,7 +117,7 @@ public sealed class BitReader : IBitReader
     }
     
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public uint ReadUint()
+    public uint ReadUInt()
     {
         if (_bitsInBuffer == 0)
         {

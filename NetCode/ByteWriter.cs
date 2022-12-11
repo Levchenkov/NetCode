@@ -9,6 +9,7 @@ public sealed class ByteWriter : IByteWriter
 
     private byte[] _data;
     private int _capacity;
+    private int _count;
 
     public ByteWriter(int capacity = DefaultCapacity):this(new byte[capacity])
     {
@@ -18,12 +19,12 @@ public sealed class ByteWriter : IByteWriter
     {
         _data = data;
         _capacity = _data.Length; 
-        Count = 0;
+        _count = 0;
     }
 
     public int Capacity => _capacity;
 
-    public int Count { get; private set; }
+    public int Count => _count;
 
     public byte[] Array => _data;
 
@@ -31,13 +32,13 @@ public sealed class ByteWriter : IByteWriter
     {
         _data = data;
         _capacity = _data.Length;
-        Count = 0;
+        _count = 0;
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void Clear()
     {
-        Count = 0;
+        _count = 0;
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -49,7 +50,7 @@ public sealed class ByteWriter : IByteWriter
             ThrowHelper.ThrowIndexOutOfRangeException();
         }
         _data[Count] = value;
-        Count += size;
+        _count += size;
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -123,12 +124,12 @@ public sealed class ByteWriter : IByteWriter
         where T : unmanaged
     {
         var size = Unsafe.SizeOf<T>();
-        if (size + Count > _capacity)
+        if (size + _count > _capacity)
         {
             ThrowHelper.ThrowIndexOutOfRangeException();
         }
         
-        Unsafe.WriteUnaligned(ref _data[Count], value);
-        Count += size;
+        Unsafe.WriteUnaligned(ref _data[_count], value);
+        _count += size;
     }
 }

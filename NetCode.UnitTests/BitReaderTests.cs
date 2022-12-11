@@ -212,7 +212,7 @@ public class BitReaderTests
     {
         var bitReader = new BitReader(new byte[] {0b_00001111, 0b_11110000, 0b_01010101, 0b_10101010});
 
-        var value = bitReader.ReadUint();
+        var value = bitReader.ReadUInt();
         value.Should().Be(0b_10101010_01010101_11110000_00001111);
     }
     
@@ -224,7 +224,25 @@ public class BitReaderTests
         var readBits = bitReader.ReadBits(1);
         readBits.Should().Be(1);
         
-        var value = bitReader.ReadUint();
+        var value = bitReader.ReadUInt();
         value.Should().Be(0b_10101010_01010101_11110000_00001111);
+    }
+
+    [Fact]
+    public void ReadBool_ArrayWithSingleSetBit_ShouldReadTrue()
+    {
+        var bitReader = new BitReader(new byte[] { 0b_1 });
+
+        var value = bitReader.ReadBool();
+        value.Should().Be(true);
+    }
+    
+    [Fact]
+    public void ReadBool_ArrayWithSingleEmptyBit_ShouldReadFalse()
+    {
+        var bitReader = new BitReader(new byte[] { 0b_0 });
+
+        var value = bitReader.ReadBool();
+        value.Should().Be(false);
     }
 }

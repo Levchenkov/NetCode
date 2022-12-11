@@ -15,6 +15,8 @@ public interface IBitWriter
     void Clear();
 
     void WriteBits(int bitCount, uint value);
+
+    void Write(bool value);
     
     void Write(byte value);
     

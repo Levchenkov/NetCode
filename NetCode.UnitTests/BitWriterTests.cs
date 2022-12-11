@@ -576,4 +576,36 @@ public class BitWriterTests
 
         bitWriter.Array[0].Should().Be(0b_101);
     }
+
+    [Fact]
+    public void WriteBool_SetTrue_ArrayShouldContainSetBit()
+    {
+        var bitWriter = new BitWriter(new byte[1]);
+        
+        bitWriter.Write(true);
+        bitWriter.BitsCount.Should().Be(1);
+        
+        bitWriter.Flush();
+
+        bitWriter.BytesCount.Should().Be(1);
+        bitWriter.BitsCount.Should().Be(8);
+        
+        bitWriter.Array[0].Should().Be(0b_1);
+    }
+    
+    [Fact]
+    public void WriteBool_SetFalse_ArrayShouldContainEmptyBit()
+    {
+        var bitWriter = new BitWriter(new byte[1]);
+        
+        bitWriter.Write(false);
+        bitWriter.BitsCount.Should().Be(1);
+        
+        bitWriter.Flush();
+
+        bitWriter.BytesCount.Should().Be(1);
+        bitWriter.BitsCount.Should().Be(8);
+        
+        bitWriter.Array[0].Should().Be(0b_0);
+    }
 }
