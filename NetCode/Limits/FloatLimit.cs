@@ -16,7 +16,7 @@ public sealed class FloatLimit
     
     public FloatLimit(float min, float max, float precision)
     {
-        if (min > max)
+        if (min >= max)
         {
             ThrowHelper.ThrowArgumentException();
         }

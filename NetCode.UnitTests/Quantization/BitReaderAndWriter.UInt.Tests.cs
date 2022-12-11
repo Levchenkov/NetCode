@@ -4,7 +4,7 @@ using Xunit;
 
 namespace NetCode.UnitTests.Quantization;
 
-public class QuantizationUIntReaderWriterTests
+public class BitReaderAndWriter_UInt_Tests
 {
     [Theory]
     [InlineData(1, 0, 10, 4)]

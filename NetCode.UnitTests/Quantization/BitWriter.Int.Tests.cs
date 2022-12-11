@@ -3,7 +3,7 @@ using Xunit;
 
 namespace NetCode.UnitTests.Quantization;
 
-public class BitWriterIntExtensionsTests
+public class BitWriter_Int_Tests
 {
     [Fact]
     public void WriteValueMinMax_SmallValueIsLimitedTo8PossibleValues_ShouldWrite3Bits()
@@ -111,5 +111,4 @@ public class BitWriterIntExtensionsTests
         writer.Array[0].Should().Be(0b_0000_0000);
         writer.Array[1].Should().Be(0b_0000_0001);
     }
-
 }
