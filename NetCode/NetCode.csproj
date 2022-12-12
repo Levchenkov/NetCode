@@ -10,13 +10,13 @@
     
     <PropertyGroup>
         <PackageId>NetCode</PackageId>
-        <Version>1.0.1</Version>
+        <Version>1.1.0</Version>
         <Authors>Eugene Levchenkov</Authors>
         <Title>NetCode</Title>
         <Description>Fast and light BitWriter and BitReader</Description>
         <PackageProjectUrl>https://github.com/Levchenkov/NetCode</PackageProjectUrl>
         <PackageLicenseUrl>https://github.com/Levchenkov/NetCode/blob/main/LICENSE</PackageLicenseUrl>
-        <PackageTags>bitreader bitwriter netcode serialization</PackageTags>
+        <PackageTags>bitreader bitwriter netcode serialization quantization</PackageTags>
     </PropertyGroup>
 
     <ItemGroup Condition=" '$(TargetFramework)' == 'netstandard2.1' ">
