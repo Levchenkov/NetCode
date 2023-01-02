@@ -35,5 +35,45 @@ public class BitReaderAndWriterTests
         bitReader.ReadUShort().Should().Be(@short);
         bitReader.ReadUInt().Should().Be(@int);
         bitReader.ReadFloat().Should().Be(@float);
-    }    
+    }
+
+    [Fact]
+    public void WriteReadString_Utf8_ShouldBeTheSame()
+    {
+        var array = new byte[100];
+        var bitWriter = new BitWriter(array);
+
+        var s = "qwertyuiopasdfghjklzxcvbnm";
+        bitWriter.WriteUtf8String(s);
+        bitWriter.Flush();
+        
+        var data = bitWriter.Array;
+        var length = bitWriter.BytesCount;
+        length.Should().Be(s.Length + 1);
+
+        var bitReader = new BitReader(data);
+        var result = bitReader.ReadUtf8String();
+        result.Should().Be(s);
+        string.IsInterned(result).Should().Be(result);
+    }
+    
+    [Fact]
+    public void WriteReadString_Unicode_ShouldBeTheSame()
+    {
+        var array = new byte[100];
+        var bitWriter = new BitWriter(array);
+
+        var s = "qwertyuiopasdfghjklzxcvbnm";
+        bitWriter.WriteUnicodeString(s);
+        bitWriter.Flush();
+        
+        var data = bitWriter.Array;
+        var length = bitWriter.BytesCount;
+        length.Should().Be(s.Length * 2 + 1);
+
+        var bitReader = new BitReader(data);
+        var result = bitReader.ReadUnicodeString();
+        result.Should().Be(s);
+        string.IsInterned(result).Should().Be(result);
+    }
 }

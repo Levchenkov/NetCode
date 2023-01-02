@@ -3,10 +3,10 @@ using NetCode.Limits;
 
 namespace NetCode;
 
-public static class BitWriterShortExtensions
+public static class BitWriterUShortExtensions
 {
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static void Write(this BitWriter writer, short value, ShortLimit limit)
+    public static void Write(this BitWriter writer, ushort value, UShortLimit limit)
     {
 #if DEBUG
         if (value < limit.Min || value > limit.Max)
@@ -19,7 +19,7 @@ public static class BitWriterShortExtensions
     }
     
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static void WriteValueIfChanged(this BitWriter writer, short baseline, short updated)
+    public static void WriteValueIfChanged(this BitWriter writer, ushort baseline, ushort updated)
     {
         if (baseline == updated)
         {
@@ -33,7 +33,7 @@ public static class BitWriterShortExtensions
     }
     
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static void WriteValueIfChanged(this BitWriter writer, short baseline, short updated, ShortLimit limit)
+    public static void WriteValueIfChanged(this BitWriter writer, ushort baseline, ushort updated, UShortLimit limit)
     {
         if (baseline.Equals(updated))
         {
@@ -47,7 +47,7 @@ public static class BitWriterShortExtensions
     }
     
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static void WriteDiffIfChanged(this BitWriter writer, short baseline, short updated, ShortLimit limit, ShortLimit diffLimit)
+    public static void WriteDiffIfChanged(this BitWriter writer, ushort baseline, ushort updated, UShortLimit limit, UShortLimit diffLimit)
     {
         if (baseline.Equals(updated))
         {
@@ -57,7 +57,7 @@ public static class BitWriterShortExtensions
         {
             writer.Write(true);
             
-            var diff = (short)(updated - baseline);
+            var diff = (ushort)(updated - baseline);
 
             if (diffLimit.Min < diff && diff < diffLimit.Max)
             {

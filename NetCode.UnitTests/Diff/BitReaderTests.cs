@@ -65,4 +65,24 @@ public class BitReaderTests
 
         updated.Should().Be(BitConverter.UInt32BitsToSingle(0b_10101010_11110000_11001100_01010101));
     }
+    
+    [Fact]
+    public void ReadString_ReaderContainsSingle0Bit_UpdatedValueShouldBeTheSameAsBaseline()
+    {
+        var bitReader = new BitReader(new byte[] {0b_0});
+
+        var updated = bitReader.ReadString("abc");
+
+        updated.Should().Be("abc");
+    }
+    
+    [Fact]
+    public void ReadString_ReaderContains1BitAndUpdatedValue_UpdatedValueShouldBeRead()
+    {
+        var bitReader = new BitReader(new byte[] {  0b_00001101, 0b_11000010, 0b_11000100, 0b_11000110, 0b_0});
+    
+        var updated = bitReader.ReadString("abb");
+    
+        updated.Should().Be("abc");
+    }
 }

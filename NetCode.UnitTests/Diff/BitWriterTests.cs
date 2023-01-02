@@ -86,4 +86,30 @@ public class BitWriterTests
 
         writer.Array[0].Should().Be(0b_10101011);
     }
+
+    [Fact]
+    public void WriteValueIfChanged_StringBaseAndUpdatedAreTheSame_ArrayShouldContainSingle0Bit()
+    {
+        var writer = new BitWriter();
+        
+        writer.WriteValueIfChanged("abc", "abc");
+        writer.BitsCount.Should().Be(1);
+        
+        writer.Flush();
+
+        writer.Array[0].Should().Be(0b_0);
+    }
+    
+    [Fact]
+    public void WriteValueIfChanged_StringBaseAndUpdatedAreDifferent_ArrayShouldContainBit1AndUpdatedValue()
+    {
+        var writer = new BitWriter();
+
+        var updated = "abc";
+        var baseline = "abb";
+        writer.WriteValueIfChanged(baseline, updated);
+        writer.BitsCount.Should().Be(1 + 8 + 24); // 1 bit changed + 8 bits of length + 3 * 8 chars
+        
+        writer.Flush();
+    }
 }
