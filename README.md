@@ -2,7 +2,7 @@
 
 ### What is NetCode?
 
-Light and Fast bit and byte serialization for .NET Standard 2.0, .NET Standard 2.1, .NET 5, .NET 6 and .NET 7 (Mono, .NET Core, .NET Framework)
+Light and Fast bit and byte serialization for .NET Standard 2.0, .NET Standard 2.1, .NET 5, .NET 6 and .NET 7 (Mono, .NET Core, .NET Framework, Unity)
 
 ### How do I get started?
 
@@ -23,7 +23,7 @@ Console.WriteLine(value); // output: 5
 Console.WriteLine(Convert.ToString(value, 2)); // output: 101
 ```
 
-##### Quantization:
+##### Quantization Example:
 
 ```csharp
 var bitWriter = new BitWriter();
@@ -43,52 +43,97 @@ Console.WriteLine(value); // 1
 
 ##### Use alloc-free binary serialization and deserialization:
 ```csharp
-record Data(byte Byte, short Short, int Int, long Long);
+var serializer = new TransformComponentSerializer();
+var deserializer = new TransformComponentDeserializer();
 
-class DataSerializer
+var before = new TransformComponent { Position = new Vector3(10f, 5f, 10f), Pitch = 30f, Yaw = 60f };
+var after = new TransformComponent { Position = new Vector3(10.5f, 5.5f, 10.5f), Pitch = 30f, Yaw = 60f };
+
+var serializedComponent = serializer.Serialize(before, after);
+Console.WriteLine(serializedComponent.Length); // 3
+
+var updated = deserializer.Deserialize(before, serializedComponent.Array);
+
+serializedComponent.Dispose();
+
+Console.WriteLine(updated); // Position: <10.5, 5.5, 10.5>, Yaw: 60, Pitch: 30
+
+public record struct TransformComponent (Vector3 Position, float Yaw, float Pitch );
+
+public struct SerializedComponent
 {
-    private readonly ByteWriter _byteWriter;
+    private readonly ArrayPool<byte> _arrayPool;
+    
+    public byte[] Array { get; }
+    
+    public int Length { get; }
 
-    public DataSerializer()
+    public SerializedComponent(ArrayPool<byte> arrayPool, byte[] array, int length)
     {
-        // Array copying is slow so ByteWriter doesn't use it. It operates fixed size arrays.
-        // So be ensure that capacity will be enough otherwise it will be throw exception.
-        _byteWriter = new ByteWriter(capacity: 1500); 
+        _arrayPool = arrayPool;
+        Array = array;
+        Length = length;
     }
 
-    public (byte[] Array, int Length) Serialize(Data data)
+    public void Dispose()
     {
-        _byteWriter.Clear();
-        
-        _byteWriter.Write(data.Byte);
-        _byteWriter.Write(data.Short);
-        _byteWriter.Write(data.Int);
-        _byteWriter.Write(data.Long);
-
-        return (_byteWriter.Array, _byteWriter.Count);
+        _arrayPool.Return(Array);
     }
 }
 
-class DataDeserializer
+public static class Limits
 {
-    private readonly ByteReader _byteReader;
+    public static readonly FloatLimit Rotation = new FloatLimit(0, 360, 0.1f);
+        
+    public static readonly Vector3Limit AbsolutePosition = new Vector3Limit(new FloatLimit(-100f, 100f, 0.1f), new FloatLimit(-10f, 10f, 0.1f), new FloatLimit(-100f, 100f, 0.1f));
+        
+    public static readonly Vector3Limit DiffPosition = new Vector3Limit(new FloatLimit(-1f, 1f, 0.1f), new FloatLimit(-1f, 1f, 0.1f), new FloatLimit(-1f, 1f, 0.1f));
+}
 
-    public DataDeserializer()
+public class TransformComponentSerializer
+{
+    private const int MTU = 1500;
+    
+    private readonly BitWriter _bitWriter = new BitWriter();
+    private readonly ArrayPool<byte> _arrayPool = ArrayPool<byte>.Shared;
+
+    public SerializedComponent Serialize(TransformComponent baseline, TransformComponent updated)
     {
-        _byteReader = new ByteReader();
+        var array = _arrayPool.Rent(MTU);
+        _bitWriter.SetArray(array);
+        
+        _bitWriter.WriteDiffIfChanged(baseline.Position.X, updated.Position.X, Limits.AbsolutePosition.X, Limits.DiffPosition.X);
+        _bitWriter.WriteDiffIfChanged(baseline.Position.Y, updated.Position.Y, Limits.AbsolutePosition.Y, Limits.DiffPosition.Y);
+        _bitWriter.WriteDiffIfChanged(baseline.Position.Z, updated.Position.Z, Limits.AbsolutePosition.Z, Limits.DiffPosition.Z);
+        
+        _bitWriter.WriteValueIfChanged(baseline.Yaw, updated.Yaw, Limits.Rotation);
+        _bitWriter.WriteValueIfChanged(baseline.Pitch, updated.Pitch, Limits.Rotation);
+        
+        _bitWriter.Flush();
+
+        return new SerializedComponent(_arrayPool, _bitWriter.Array, _bitWriter.BytesCount);
     }
+}
 
-    public Data Deserialize(byte[] array)
+public class TransformComponentDeserializer
+{
+    private readonly BitReader _bitReader = new BitReader();
+
+    public TransformComponent Deserialize(TransformComponent before, byte[] array)
     {
-        _byteReader.SetArray(array);
+        _bitReader.SetArray(array);
 
-        var data = new Data(
-            _byteReader.ReadByte(),
-            _byteReader.ReadShort(),
-            _byteReader.ReadInt(),
-            _byteReader.ReadLong());
+        TransformComponent result = default;
 
-        return data;
+        result.Position = new Vector3(
+            _bitReader.ReadFloat(before.Position.X, Limits.AbsolutePosition.X, Limits.DiffPosition.X),
+            _bitReader.ReadFloat(before.Position.Y, Limits.AbsolutePosition.Y, Limits.DiffPosition.Y),
+            _bitReader.ReadFloat(before.Position.Z, Limits.AbsolutePosition.Z, Limits.DiffPosition.Z));
+        
+        result.Yaw = _bitReader.ReadFloat(before.Yaw, Limits.Rotation);
+        result.Pitch = _bitReader.ReadFloat(before.Pitch, Limits.Rotation);
+
+        return result;
     }
 }
 
@@ -116,8 +161,9 @@ dotnet add package NetCode
     - No array creation
     - Reusable class instances
   - Has a lot of [benchmarks](https://github.com/Levchenkov/NetCode/tree/main/NetCode.Benchmarks)
-- Light
-  - 4 classes each about 150 code lines 
+- Read \ Write bit values
+- Read \ Write with delta compression
+- Read \ Write quantized values
 - Safe to use
   - Covered by [unit](https://github.com/Levchenkov/NetCode/tree/main/NetCode.UnitTests) tests
 - Supports a lot of frameworks:
