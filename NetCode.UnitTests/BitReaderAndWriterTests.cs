@@ -12,6 +12,9 @@ public class BitReaderAndWriterTests
     private static uint @int = 0b_10101010_01010101_11110000_00001111;
     private static float @float = BitConverter.UInt32BitsToSingle(@int);
     
+    private static ulong @long = 0b_11111111_00000000_11001100_00110011_10101010_01010101_11110000_00001111;
+    private static double @double = BitConverter.UInt64BitsToDouble(@long);
+    
     [Fact]
     public void WriteAndReadTheSameData()
     {
@@ -23,6 +26,8 @@ public class BitReaderAndWriterTests
         bitWriter.Write(@short);
         bitWriter.Write(@int);
         bitWriter.Write(@float);
+        bitWriter.Write(@long);
+        bitWriter.Write(@double);
         bitWriter.Flush();
 
         var data = bitWriter.Array;
@@ -35,6 +40,8 @@ public class BitReaderAndWriterTests
         bitReader.ReadUShort().Should().Be(@short);
         bitReader.ReadUInt().Should().Be(@int);
         bitReader.ReadFloat().Should().Be(@float);
+        bitReader.ReadULong().Should().Be(@long);
+        bitReader.ReadDouble().Should().Be(@double);
     }
 
     [Fact]
