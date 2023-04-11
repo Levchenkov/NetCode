@@ -95,6 +95,26 @@ public class BitReaderTests
     }
     
     [Fact]
+    public void ReadBits_SetArrayWithLengthAndRead1Bit_ShouldRead()
+    {
+        var bitReader = new BitReader(Array.Empty<byte>());
+        bitReader.SetArray(new byte[] {byte.MaxValue}, 0, 1);
+
+        var bits = bitReader.ReadBits(1);
+        bits.Should().Be(1);
+    }
+    
+    [Fact]
+    public void ReadBits_SetArrayWithStartAndLengthAndRead1Bit_ShouldRead()
+    {
+        var bitReader = new BitReader(Array.Empty<byte>());
+        bitReader.SetArray(new byte[] {byte.MaxValue, byte.MaxValue}, 1, 1);
+
+        var bits = bitReader.ReadBits(1);
+        bits.Should().Be(1);
+    }
+    
+    [Fact]
     public void ReadBits_SetArrayAndReadAllAndSetArrayAndReadAll_ShouldRead()
     {
         var bitReader = new BitReader(Array.Empty<byte>());
@@ -104,6 +124,21 @@ public class BitReaderTests
         bits.Should().Be(byte.MaxValue);
         
         bitReader.SetArray(new byte[] {byte.MaxValue});
+
+        var bits2 = bitReader.ReadBits(8);
+        bits2.Should().Be(byte.MaxValue);
+    }
+    
+    [Fact]
+    public void ReadBits_SetArrayWithStartAndReadAllAndSetArrayAndReadAll_ShouldRead()
+    {
+        var bitReader = new BitReader(Array.Empty<byte>());
+        bitReader.SetArray(new byte[] {byte.MaxValue, byte.MaxValue}, 1, 1);
+
+        var bits = bitReader.ReadBits(8);
+        bits.Should().Be(byte.MaxValue);
+        
+        bitReader.SetArray(new byte[] {byte.MaxValue, byte.MaxValue}, 1, 1);
 
         var bits2 = bitReader.ReadBits(8);
         bits2.Should().Be(byte.MaxValue);

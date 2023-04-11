@@ -146,6 +146,71 @@ public class ByteWriterTests
         byteWriter.Array[0].Should().Be(0b_01010101);
         byteWriter.Array[1].Should().Be(0b_10101010);
     }
+    
+    [Fact]
+    public void EmptyByteWriter_SetArrayWithZeroOffsetAndWriteShort_ArrayShouldContainBytes()
+    {
+        var byteWriter = new ByteWriter(Array.Empty<byte>());
+        byteWriter.SetArray(new byte[2], 0);
+
+        ushort value = 0b_10101010_01010101;
+        byteWriter.Write(value);
+
+        byteWriter.Count.Should().Be(2);
+        byteWriter.Array[0].Should().Be(0b_01010101);
+        byteWriter.Array[1].Should().Be(0b_10101010);
+    }
+    
+    [Fact]
+    public void EmptyByteWriter_SetArrayWithNonZeroOffsetAndWriteShort_ArrayShouldContainBytes()
+    {
+        var byteWriter = new ByteWriter(Array.Empty<byte>());
+        byteWriter.SetArray(new byte[3], 1);
+
+        ushort value = 0b_10101010_01010101;
+        byteWriter.Write(value);
+
+        byteWriter.Count.Should().Be(3);
+        byteWriter.Array[0].Should().Be(0b_00000000);
+        byteWriter.Array[1].Should().Be(0b_01010101);
+        byteWriter.Array[2].Should().Be(0b_10101010);
+    }
+    
+    [Fact]
+    public void EmptyByteWriter_SetArrayWithNonZeroOffsetAndWriteByte_ArrayShouldContainBytes()
+    {
+        var byteWriter = new ByteWriter(Array.Empty<byte>());
+        byteWriter.SetArray(new byte[3], 2);
+
+        byte value = 0b_10101010;
+        byteWriter.Write(value);
+
+        byteWriter.Count.Should().Be(3);
+        byteWriter.Array[0].Should().Be(0b_00000000);
+        byteWriter.Array[1].Should().Be(0b_00000000);
+        byteWriter.Array[2].Should().Be(0b_10101010);
+    }
+
+    [Fact]
+    public void EmptyByteWriter_SetArrayWithoutEmptySpaceAndWriteByte_ExceptionExpected()
+    {
+        var byteWriter = new ByteWriter(Array.Empty<byte>());
+        byteWriter.SetArray(new byte[3], 3);
+        
+        Action action = () => byteWriter.Write(byte.MaxValue);
+        
+        action.Should().Throw<IndexOutOfRangeException>();
+    }
+    
+    [Fact]
+    public void EmptyByteWriter_SetArrayWithNonValidOffset_ExceptionExpected()
+    {
+        var byteWriter = new ByteWriter(Array.Empty<byte>());
+        
+        Action action = () => byteWriter.SetArray(new byte[3], 4);
+        
+        action.Should().Throw<ArgumentOutOfRangeException>();
+    }
 
     [Fact]
     public void SizeOfArrayIs1Byte_WriteByteAndClearAndWriteByte_ArrayShouldContainTheLastWrittenByte()

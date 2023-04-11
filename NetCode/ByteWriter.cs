@@ -28,11 +28,18 @@ public sealed class ByteWriter : IByteWriter
 
     public byte[] Array => _data;
 
-    public void SetArray(byte[] data)
+    public void SetArray(byte[] data) => SetArray(data, 0);
+
+    public void SetArray(byte[] data, int offset)
     {
+        if (offset > data.Length)
+        {
+            ThrowHelper.ThrowArgumentOutOfRangeException();
+        }
+        
         _data = data;
         _capacity = _data.Length;
-        _count = 0;
+        _count = offset;
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]

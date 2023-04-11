@@ -45,9 +45,12 @@ public sealed class BitWriter : IBitWriter
 
     public byte[] Array => _bitsInBuffer == 0 ? _byteWriter.Array : throw new InvalidOperationException("Writer should be flushed first.");
 
-    public void SetArray(byte[] data)
+    public void SetArray(byte[] data) => SetArray(data, 0);
+
+    public void SetArray(byte[] data, int offset)
     {
-        _byteWriter.SetArray(data);
+        _byteWriter.SetArray(data, offset);
+        
         _bitsInBuffer = 0;
         _buffer = 0;
     }

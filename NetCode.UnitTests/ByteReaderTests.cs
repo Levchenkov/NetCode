@@ -316,4 +316,77 @@ public class ByteReaderTests
 
         value2.Should().Be(unchecked((short)0b_11110000_00001111));
     }
+
+    [Fact]
+    public void EmptyReader_SetArrayAndReadShort_ShouldBeRead()
+    {
+        var byteReader = new ByteReader(Array.Empty<byte>());
+        
+        var array = new byte[]
+        {
+            0b_00001111,
+            0b_11110000
+        };
+        
+        byteReader.SetArray(array);
+
+        byteReader.Length.Should().Be(2);
+        byteReader.ReadByte().Should().Be(0b_00001111);
+        byteReader.ReadByte().Should().Be(0b_11110000);
+    }
+    
+    [Fact]
+    public void EmptyReader_SetArrayWithStartEq0AndReadShort_ShouldBeRead()
+    {
+        var byteReader = new ByteReader(Array.Empty<byte>());
+        
+        var array = new byte[]
+        {
+            0b_00001111,
+            0b_11110000
+        };
+        
+        byteReader.SetArray(array, 0, 2);
+        
+        byteReader.Length.Should().Be(2);
+        byteReader.ReadByte().Should().Be(0b_00001111);
+        byteReader.ReadByte().Should().Be(0b_11110000);
+    }
+    
+    [Fact]
+    public void EmptyReader_SetArrayWithStartEq1AndReadByte_ShouldBeRead()
+    {
+        var byteReader = new ByteReader(Array.Empty<byte>());
+        
+        var array = new byte[]
+        {
+            0b_00001111,
+            0b_11110000
+        };
+        
+        byteReader.SetArray(array, 1, 1);
+        
+        byteReader.Length.Should().Be(1);
+        byteReader.ReadByte().Should().Be(0b_11110000);
+    }
+    
+    [Fact]
+    public void EmptyReader_SetArrayWithLengthMoreThanArrayLength_ExceptionExpected()
+    {
+        var byteReader = new ByteReader(Array.Empty<byte>());
+        
+        Action action = () => byteReader.SetArray(new byte[2], 0, 3);
+
+        action.Should().Throw<ArgumentOutOfRangeException>();
+    }
+    
+    [Fact]
+    public void EmptyReader_SetArrayWithStartMoreThanArrayLength_ExceptionExpected()
+    {
+        var byteReader = new ByteReader(Array.Empty<byte>());
+        
+        Action action = () => byteReader.SetArray(new byte[2], 3, 2);
+        
+        action.Should().Throw<ArgumentOutOfRangeException>();
+    }
 }

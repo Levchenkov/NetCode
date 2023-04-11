@@ -6,6 +6,8 @@ public interface IBitReader
 
     void SetArray(byte[] data);
 
+    void SetArray(byte[] data, int start, int length);
+
     void Reset();
     
     uint ReadBits(int bitCount);

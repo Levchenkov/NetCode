@@ -24,11 +24,18 @@ public sealed class ByteReader : IByteReader
 
     public int Length => _capacity - _head;
 
-    public void SetArray(byte[] data)
+    public void SetArray(byte[] data) => SetArray(data, 0, data.Length);
+    
+    public void SetArray(byte[] data, int start, int length)
     {
+        if (start + length > data.Length)
+        {
+            ThrowHelper.ThrowArgumentOutOfRangeException();
+        }
+        
         _data = data;
-        _capacity = _data.Length;
-        _head = 0;
+        _capacity = length + start;
+        _head = start;
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]

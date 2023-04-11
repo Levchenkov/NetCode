@@ -9,6 +9,8 @@ public interface IByteWriter
     byte[] Array { get; }
 
     void SetArray(byte[] data);
+    
+    void SetArray(byte[] data, int offset);
 
     void Clear();
     
