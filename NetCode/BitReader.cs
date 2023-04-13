@@ -37,7 +37,9 @@ public sealed class BitReader : IBitReader
 
     public int BytesCount => _byteReader.Length + Mathi.Ceiling(_bitsInBuffer, 8);
 
-    public void SetArray(byte[] data) => SetArray(data, 0, data.Length);
+    public void SetArray(byte[] data) => SetArray(data, 0);
+
+    public void SetArray(byte[] data, int offset) => SetArray(data, offset, data.Length - offset);
 
     public void SetArray(byte[] data, int start, int length)
     {

@@ -5,6 +5,8 @@ public interface IBitReader
     int BytesCount { get; }
 
     void SetArray(byte[] data);
+    
+    void SetArray(byte[] data, int offset);
 
     void SetArray(byte[] data, int start, int length);
 
