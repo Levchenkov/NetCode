@@ -133,7 +133,7 @@ public class ByteReaderTests
     {
         var byteReader = new ByteReader(Array.Empty<byte>());
 
-        byteReader.Capacity.Should().Be(0);
+        byteReader.End.Should().Be(0);
 
         Action action = () => byteReader.ReadByte();
 
@@ -163,7 +163,7 @@ public class ByteReaderTests
         };
 
         var byteReader = new ByteReader(array);
-        byteReader.Length.Should().Be(1);
+        byteReader.RemainingToRead.Should().Be(1);
         
         var (value, readBytes) = byteReader.TryReadUInt();
 
@@ -183,7 +183,7 @@ public class ByteReaderTests
         };
 
         var byteReader = new ByteReader(array);
-        byteReader.Length.Should().Be(4);
+        byteReader.RemainingToRead.Should().Be(4);
         
         var (value, readBytes) = byteReader.TryReadUInt();
 
@@ -204,13 +204,13 @@ public class ByteReaderTests
         };
 
         var byteReader = new ByteReader(array);
-        byteReader.Length.Should().Be(5);
+        byteReader.RemainingToRead.Should().Be(5);
         
         var (value, readBytes) = byteReader.TryReadUInt();
 
         value.Should().Be(0b_11110000_11110000_11110000_11110000);
         readBytes.Should().Be(4);
-        byteReader.Length.Should().Be(1);
+        byteReader.RemainingToRead.Should().Be(1);
     }
     
     [Fact]
@@ -249,7 +249,7 @@ public class ByteReaderTests
     }
     
     [Fact]
-    public void ArrayContains4Bytes_ReadDataSeveralTimes_LenghtShouldBeValid()
+    public void ArrayContains4Bytes_ReadDataSeveralTimes_RemainingToReadShouldBeValid()
     {
         var array = new byte[]
         {
@@ -260,20 +260,20 @@ public class ByteReaderTests
         };
 
         var byteReader = new ByteReader(array);
-        byteReader.Length.Should().Be(4);
+        byteReader.RemainingToRead.Should().Be(4);
         
         byteReader.ReadByte();
-        byteReader.Length.Should().Be(3);
+        byteReader.RemainingToRead.Should().Be(3);
         
         byteReader.ReadShort();
-        byteReader.Length.Should().Be(1);
+        byteReader.RemainingToRead.Should().Be(1);
 
         byteReader.ReadByte();
-        byteReader.Length.Should().Be(0);
+        byteReader.RemainingToRead.Should().Be(0);
     }
     
     [Fact]
-    public void ArrayContains4Bytes_TryReadDataSeveralTimes_LenghtShouldBeValid()
+    public void ArrayContains4Bytes_TryReadDataSeveralTimes_RemainingToReadShouldBeValid()
     {
         var array = new byte[]
         {
@@ -284,16 +284,16 @@ public class ByteReaderTests
         };
 
         var byteReader = new ByteReader(array);
-        byteReader.Length.Should().Be(4);
+        byteReader.RemainingToRead.Should().Be(4);
         
         byteReader.ReadByte();
-        byteReader.Length.Should().Be(3);
+        byteReader.RemainingToRead.Should().Be(3);
         
         byteReader.ReadShort();
-        byteReader.Length.Should().Be(1);
+        byteReader.RemainingToRead.Should().Be(1);
 
         byteReader.TryReadUInt();
-        byteReader.Length.Should().Be(0);
+        byteReader.RemainingToRead.Should().Be(0);
     }
     
     [Fact]
@@ -330,7 +330,7 @@ public class ByteReaderTests
         
         byteReader.SetArray(array);
 
-        byteReader.Length.Should().Be(2);
+        byteReader.RemainingToRead.Should().Be(2);
         byteReader.ReadByte().Should().Be(0b_00001111);
         byteReader.ReadByte().Should().Be(0b_11110000);
     }
@@ -348,7 +348,7 @@ public class ByteReaderTests
         
         byteReader.SetArray(array, 0, 2);
         
-        byteReader.Length.Should().Be(2);
+        byteReader.RemainingToRead.Should().Be(2);
         byteReader.ReadByte().Should().Be(0b_00001111);
         byteReader.ReadByte().Should().Be(0b_11110000);
     }
@@ -366,7 +366,7 @@ public class ByteReaderTests
         
         byteReader.SetArray(array, 1, 1);
         
-        byteReader.Length.Should().Be(1);
+        byteReader.RemainingToRead.Should().Be(1);
         byteReader.ReadByte().Should().Be(0b_11110000);
     }
     
@@ -388,5 +388,94 @@ public class ByteReaderTests
         Action action = () => byteReader.SetArray(new byte[2], 3, 2);
         
         action.Should().Throw<ArgumentOutOfRangeException>();
+    }
+    
+    [Fact]
+    public void SetArray_ReadDataSeveralTimes_RemainingToReadShouldBeValid()
+    {
+        var array = new byte[]
+        {
+            0b_11001100,
+            0b_00001111,
+            0b_11110000,
+            0b_10101010
+        };
+
+        var byteReader = new ByteReader();
+        byteReader.SetArray(array);
+        
+        byteReader.Start.Should().Be(0);
+        byteReader.End.Should().Be(4);
+        byteReader.Head.Should().Be(0);
+        byteReader.RemainingToRead.Should().Be(4);
+        
+        byteReader.ReadByte();
+        
+        byteReader.Start.Should().Be(0);
+        byteReader.End.Should().Be(4);
+        byteReader.Head.Should().Be(1);
+        byteReader.RemainingToRead.Should().Be(3);
+        
+        byteReader.ReadShort();
+        
+        byteReader.Start.Should().Be(0);
+        byteReader.End.Should().Be(4);
+        byteReader.Head.Should().Be(3);
+        byteReader.RemainingToRead.Should().Be(1);
+
+        byteReader.TryReadUInt();
+        
+        byteReader.Start.Should().Be(0);
+        byteReader.End.Should().Be(4);
+        byteReader.Head.Should().Be(4);
+        byteReader.RemainingToRead.Should().Be(0);
+    }
+    
+    [Fact]
+    public void SetArrayWithStart_ReadDataSeveralTimes_RemainingToReadShouldBeValid()
+    {
+        var array = new byte[]
+        {
+            0b_11001100,
+            0b_00001111,
+            0b_11110000,
+            0b_10101010
+        };
+
+        var byteReader = new ByteReader();
+        byteReader.SetArray(array, 1, 3);
+        
+        byteReader.Start.Should().Be(1);
+        byteReader.End.Should().Be(4);
+        byteReader.Head.Should().Be(1);
+        byteReader.RemainingToRead.Should().Be(3);
+        
+        byteReader.ReadByte();
+        
+        byteReader.Start.Should().Be(1);
+        byteReader.End.Should().Be(4);
+        byteReader.Head.Should().Be(2);
+        byteReader.RemainingToRead.Should().Be(2);
+        
+        byteReader.ReadShort();
+        
+        byteReader.Start.Should().Be(1);
+        byteReader.End.Should().Be(4);
+        byteReader.Head.Should().Be(4);
+        byteReader.RemainingToRead.Should().Be(0);
+
+        byteReader.TryReadUInt();
+        
+        byteReader.Start.Should().Be(1);
+        byteReader.End.Should().Be(4);
+        byteReader.Head.Should().Be(4);
+        byteReader.RemainingToRead.Should().Be(0);
+        
+        byteReader.Reset();
+        
+        byteReader.Start.Should().Be(1);
+        byteReader.End.Should().Be(4);
+        byteReader.Head.Should().Be(1);
+        byteReader.RemainingToRead.Should().Be(3);
     }
 }

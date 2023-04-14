@@ -35,7 +35,44 @@ public sealed class BitReader : IBitReader
         _byteReader = byteReader;
     }
 
-    public int BytesCount => _byteReader.Length + Mathi.Ceiling(_bitsInBuffer, 8);
+    public int Start => _byteReader.Start;
+    
+    public int End => _byteReader.End;
+
+    /// <summary>
+    /// Returns the number of bytes and bits that can be read from this instance.
+    /// Example. We read 3 bits from 2 bytes array: 0b_00001111_00001111. Tuple (Bytes: 1, Bits: 5) will be returned. 
+    ///                                                   ^ 
+    /// </summary>
+    public (int Bytes, int Bits) RemainingToRead
+    {
+        get
+        {
+            var (quotient, remainder) = Mathi.DivRem(_bitsInBuffer, 8);
+
+            return (_byteReader.RemainingToRead + quotient, remainder);
+        }
+    }
+
+    /// <summary>
+    /// Returns the pointer with current position of reading value.
+    /// Example. We read 3 bits from 2 bytes array: 0b_00001111_00001111. Tuple (Bytes: 0, Bits: 3) will be returned. 
+    ///                                                   ^
+    /// </summary>
+    public (int Bytes, int Bits) Head
+    {
+        get
+        {
+            var (quotient, remainder) = Mathi.DivRem(_bitsInBuffer, 8);
+
+            if (remainder == 0)
+            {
+                return (_byteReader.Head - quotient, 0);    
+            }
+            
+            return (_byteReader.Head - quotient - 1, 8 - remainder);
+        }
+    } 
 
     public void SetArray(byte[] data) => SetArray(data, 0);
 

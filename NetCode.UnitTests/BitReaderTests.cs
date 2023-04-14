@@ -315,4 +315,148 @@ public class BitReaderTests
         var value = bitReader.ReadBool();
         value.Should().Be(false);
     }
+    
+    [Fact]
+    public void HeadAndRemainingToRead_SetArray_ShouldBeValid()
+    {
+        var array = new byte[]
+        {
+            0b_11001100,
+            0b_00001111,
+            0b_11110000,
+            0b_10101010
+        };
+
+        var bitReader = new BitReader();
+        bitReader.SetArray(array);
+
+        bitReader.Start.Should().Be(0);
+        bitReader.End.Should().Be(4);
+        bitReader.Head.Bytes.Should().Be(0);
+        bitReader.Head.Bits.Should().Be(0);
+        bitReader.RemainingToRead.Bytes.Should().Be(4);
+        bitReader.RemainingToRead.Bits.Should().Be(0);
+
+        bitReader.ReadBits(1);
+        
+        bitReader.Start.Should().Be(0);
+        bitReader.End.Should().Be(4);
+        bitReader.Head.Bytes.Should().Be(0);
+        bitReader.Head.Bits.Should().Be(1);
+        bitReader.RemainingToRead.Bytes.Should().Be(3);
+        bitReader.RemainingToRead.Bits.Should().Be(7);
+        
+        bitReader.ReadBits(6);
+        
+        bitReader.Head.Bytes.Should().Be(0);
+        bitReader.Head.Bits.Should().Be(7);
+        bitReader.RemainingToRead.Bytes.Should().Be(3);
+        bitReader.RemainingToRead.Bits.Should().Be(1);
+
+        bitReader.ReadBits(1);
+        
+        bitReader.Head.Bytes.Should().Be(1);
+        bitReader.Head.Bits.Should().Be(0);
+        bitReader.RemainingToRead.Bytes.Should().Be(3);
+        bitReader.RemainingToRead.Bits.Should().Be(0);
+
+        bitReader.ReadBits(16 + 7); // it remains 1 bit in array
+        
+        bitReader.Start.Should().Be(0);
+        bitReader.End.Should().Be(4);
+        bitReader.Head.Bytes.Should().Be(3);
+        bitReader.Head.Bits.Should().Be(7);
+        bitReader.RemainingToRead.Bytes.Should().Be(0);
+        bitReader.RemainingToRead.Bits.Should().Be(1);
+
+        bitReader.ReadBits(1);
+        
+        bitReader.Start.Should().Be(0);
+        bitReader.End.Should().Be(4);
+        bitReader.Head.Bytes.Should().Be(4);
+        bitReader.Head.Bits.Should().Be(0);
+        bitReader.RemainingToRead.Bytes.Should().Be(0);
+        bitReader.RemainingToRead.Bits.Should().Be(0);
+    }
+    
+    [Fact]
+    public void HeadAndRemainingToRead_SetArrayWithOffset_ShouldBeValid()
+    {
+        var array = new byte[]
+        {
+            0b_11001100,
+            0b_00001111,
+            0b_11110000,
+            0b_10101010
+        };
+
+        var bitReader = new BitReader();
+        bitReader.SetArray(array, 1);
+
+        bitReader.Start.Should().Be(1);
+        bitReader.End.Should().Be(4);
+        bitReader.Head.Bytes.Should().Be(1);
+        bitReader.Head.Bits.Should().Be(0);
+        bitReader.RemainingToRead.Bytes.Should().Be(3);
+        bitReader.RemainingToRead.Bits.Should().Be(0);
+
+        bitReader.ReadBits(1);
+        
+        bitReader.Start.Should().Be(1);
+        bitReader.End.Should().Be(4);
+        bitReader.Head.Bytes.Should().Be(1);
+        bitReader.Head.Bits.Should().Be(1);
+        bitReader.RemainingToRead.Bytes.Should().Be(2);
+        bitReader.RemainingToRead.Bits.Should().Be(7);
+        
+        bitReader.ReadBits(6);
+        
+        bitReader.Head.Bytes.Should().Be(1);
+        bitReader.Head.Bits.Should().Be(7);
+        bitReader.RemainingToRead.Bytes.Should().Be(2);
+        bitReader.RemainingToRead.Bits.Should().Be(1);
+
+        bitReader.ReadBits(1);
+        
+        bitReader.Head.Bytes.Should().Be(2);
+        bitReader.Head.Bits.Should().Be(0);
+        bitReader.RemainingToRead.Bytes.Should().Be(2);
+        bitReader.RemainingToRead.Bits.Should().Be(0);
+
+        bitReader.ReadBits(8 + 7); // it remains 1 bit in array
+        
+        bitReader.Start.Should().Be(1);
+        bitReader.End.Should().Be(4);
+        bitReader.Head.Bytes.Should().Be(3);
+        bitReader.Head.Bits.Should().Be(7);
+        bitReader.RemainingToRead.Bytes.Should().Be(0);
+        bitReader.RemainingToRead.Bits.Should().Be(1);
+
+        bitReader.ReadBits(1);
+        
+        bitReader.Start.Should().Be(1);
+        bitReader.End.Should().Be(4);
+        bitReader.Head.Bytes.Should().Be(4);
+        bitReader.Head.Bits.Should().Be(0);
+        bitReader.RemainingToRead.Bytes.Should().Be(0);
+        bitReader.RemainingToRead.Bits.Should().Be(0);
+    
+        bitReader.Reset();
+        
+        bitReader.Start.Should().Be(1);
+        bitReader.End.Should().Be(4);
+        bitReader.Head.Bytes.Should().Be(1);
+        bitReader.Head.Bits.Should().Be(0);
+        bitReader.RemainingToRead.Bytes.Should().Be(3);
+        bitReader.RemainingToRead.Bits.Should().Be(0);
+        
+        bitReader.ReadBits(1);
+        
+        bitReader.Start.Should().Be(1);
+        bitReader.End.Should().Be(4);
+        bitReader.Head.Bytes.Should().Be(1);
+        bitReader.Head.Bits.Should().Be(1);
+        bitReader.RemainingToRead.Bytes.Should().Be(2);
+        bitReader.RemainingToRead.Bits.Should().Be(7);
+    }
 }

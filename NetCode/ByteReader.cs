@@ -6,7 +6,8 @@ namespace NetCode;
 public sealed class ByteReader : IByteReader
 {
     private byte[] _data;
-    private int _capacity;
+    private int _start;
+    private int _end;
     private int _head;
 
     public ByteReader() : this(Array.Empty<byte>())
@@ -16,13 +17,17 @@ public sealed class ByteReader : IByteReader
     public ByteReader(byte[] data)
     {
         _data = data;
-        _capacity = _data.Length;
-        _head = 0;
+        _end = _data.Length;
+        _head = _start = 0;
     }
 
-    public int Capacity => _capacity;
+    public int Start => _start;
+    
+    public int End => _end;
 
-    public int Length => _capacity - _head;
+    public int RemainingToRead => _end - _head;
+
+    public int Head => _head;
 
     public void SetArray(byte[] data) => SetArray(data, 0, data.Length);
     
@@ -34,21 +39,21 @@ public sealed class ByteReader : IByteReader
         }
         
         _data = data;
-        _capacity = length + start;
-        _head = start;
+        _end = length + start;
+        _head = _start = start;
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void Reset()
     {
-        _head = 0;
+        _head = _start;
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public byte ReadByte()
     {
         var size = 1;
-        if (_head + size > _capacity)
+        if (_head + size > _end)
         {
             ThrowHelper.ThrowIndexOutOfRangeException();
         }
@@ -140,7 +145,7 @@ public sealed class ByteReader : IByteReader
         where T : unmanaged
     {
         var size = Unsafe.SizeOf<T>();
-        if (_head + size > _capacity)
+        if (_head + size > _end)
         {
             ThrowHelper.ThrowIndexOutOfRangeException();
         }
@@ -160,9 +165,9 @@ public sealed class ByteReader : IByteReader
         where T : unmanaged
     {
         var size = Unsafe.SizeOf<T>();
-        if (Length < size)
+        if (RemainingToRead < size)
         {
-            size = Length;
+            size = RemainingToRead;
 
             if (size == 0)
             {

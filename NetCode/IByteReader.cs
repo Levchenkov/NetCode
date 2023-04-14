@@ -2,9 +2,13 @@ namespace NetCode;
 
 public interface IByteReader
 {
-    int Capacity { get; }
+    int Start { get; }
     
-    int Length { get; }
+    int End { get; }
+    
+    int RemainingToRead { get; }
+    
+    int Head { get; }
 
     void SetArray(byte[] data);
 
