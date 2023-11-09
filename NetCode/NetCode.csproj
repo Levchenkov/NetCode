@@ -5,12 +5,12 @@
         <ImplicitUsings>enable</ImplicitUsings>
         <LangVersion>10.0</LangVersion>
         <Nullable>enable</Nullable>
-        <AllowUnsafeBlocks>true</AllowUnsafeBlocks>        
+        <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     </PropertyGroup>
-    
+
     <PropertyGroup>
         <PackageId>NetCode</PackageId>
-        <Version>1.1.2</Version>
+        <Version>1.1.3</Version>
         <Authors>Eugene Levchenkov</Authors>
         <Title>NetCode</Title>
         <Description>Fast and light BitWriter and BitReader</Description>
