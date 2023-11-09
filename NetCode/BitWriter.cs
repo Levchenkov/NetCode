@@ -5,9 +5,9 @@ namespace NetCode;
 public sealed class BitWriter : IBitWriter
 {
     private const int DefaultCapacity = 1500;
-    
+
     private static readonly uint[] Masks;
-    
+
     private readonly ByteWriter _byteWriter;
     private ulong _buffer;
     private int _bitsInBuffer;
@@ -20,7 +20,7 @@ public sealed class BitWriter : IBitWriter
             var mask = (1u << i) - 1;
             Masks[i] = mask;
         }
-        
+
         Masks[32] = uint.MaxValue;
     }
 
@@ -38,7 +38,7 @@ public sealed class BitWriter : IBitWriter
     }
 
     public int BitsCount => _byteWriter.Count * 8 + _bitsInBuffer;
-    
+
     public int BytesCount => _byteWriter.Count + Mathi.Ceiling(_bitsInBuffer, 8);
 
     public int Capacity => _byteWriter.Capacity;
@@ -50,7 +50,7 @@ public sealed class BitWriter : IBitWriter
     public void SetArray(byte[] data, int offset)
     {
         _byteWriter.SetArray(data, offset);
-        
+
         _bitsInBuffer = 0;
         _buffer = 0;
     }
@@ -63,18 +63,67 @@ public sealed class BitWriter : IBitWriter
         _buffer = 0;
     }
 
+    /// <summary>
+    /// Set bit at specific position. You can set only if you has written data to it position.
+    /// </summary>
+    public void SetAt(int bitPosition, bool value)
+    {
+        if (bitPosition < 0 || bitPosition >= _byteWriter.Capacity * 8)
+            throw new IndexOutOfRangeException();
+
+        if (bitPosition + 1 > BitsCount)
+            throw new NotSupportedException("You can't set bit before you write value to it position!");
+
+        var (byteIndex, bitIndex) = Mathi.DivRem(bitPosition, 8);
+        var bitPositionInBuffer = bitPosition - _byteWriter.Count * 8;
+
+        if (bitPositionInBuffer >= 0)
+        {
+            // set bit at the buffer
+
+            ulong mask = 1ul << bitPositionInBuffer;
+
+            if (value)
+            {
+                _buffer |= mask;
+            }
+            else
+            {
+                _buffer &= ~mask;
+            }
+        }
+        else
+        {
+            // set bit at the array
+
+            var @byte = _byteWriter.Array[byteIndex];
+
+            byte mask = (byte)(1 << bitIndex);
+            if (value)
+            {
+                @byte |= mask;
+            }
+            else
+            {
+                @byte = (byte)(@byte & ~mask);
+            }
+
+            _byteWriter.Array[byteIndex] = @byte;
+        }
+    }
+
     public void WriteBits(int bitCount, uint value)
     {
         value &= Masks[bitCount];
 
         _buffer |= (ulong)value << _bitsInBuffer;
         _bitsInBuffer += bitCount;
-    
+
         if (_bitsInBuffer >= 32)
         {
             uint write = (uint)_buffer;
             _byteWriter.Write(write);
-            
+
             _buffer >>= 32;
             _bitsInBuffer -= 32;
         }
@@ -107,7 +156,7 @@ public sealed class BitWriter : IBitWriter
             WriteBits(16, value);
         }
     }
-    
+
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void Write(short value)
     {
@@ -126,7 +175,7 @@ public sealed class BitWriter : IBitWriter
             WriteBits(32, value);
         }
     }
-    
+
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void Write(int value)
     {
