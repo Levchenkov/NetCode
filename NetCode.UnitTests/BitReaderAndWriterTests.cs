@@ -1,6 +1,7 @@
 using System;
 using System.Numerics;
 using FluentAssertions;
+using NetCode.Limits;
 using Xunit;
 
 namespace NetCode.UnitTests;
@@ -11,16 +12,16 @@ public class BitReaderAndWriterTests
     private static ushort @short = 0b_11110000_00001111;
     private static uint @int = 0b_10101010_01010101_11110000_00001111;
     private static float @float = BitConverter.UInt32BitsToSingle(@int);
-    
+
     private static ulong @long = 0b_11111111_00000000_11001100_00110011_10101010_01010101_11110000_00001111;
     private static double @double = BitConverter.UInt64BitsToDouble(@long);
-    
+
     [Fact]
     public void WriteAndReadTheSameData()
     {
         var array = new byte[100];
         var bitWriter = new BitWriter(array);
-        
+
         bitWriter.WriteBits(19, 0b_10101010_01010101_11110000_00001111);
         bitWriter.Write(@byte);
         bitWriter.Write(@short);
@@ -34,7 +35,7 @@ public class BitReaderAndWriterTests
         data.Should().BeSameAs(array);
 
         var bitReader = new BitReader(data);
-        
+
         bitReader.ReadBits(19).Should().Be(0b_101_11110000_00001111);
         bitReader.ReadByte().Should().Be(@byte);
         bitReader.ReadUShort().Should().Be(@short);
@@ -53,7 +54,7 @@ public class BitReaderAndWriterTests
         var s = "qwertyuiopasdfghjklzxcvbnm";
         bitWriter.WriteUtf8String(s);
         bitWriter.Flush();
-        
+
         var data = bitWriter.Array;
         var length = bitWriter.BytesCount;
         length.Should().Be(s.Length + 1);
@@ -63,7 +64,7 @@ public class BitReaderAndWriterTests
         result.Should().Be(s);
         string.IsInterned(result).Should().Be(result);
     }
-    
+
     [Fact]
     public void WriteReadString_Unicode_ShouldBeTheSame()
     {
@@ -73,7 +74,7 @@ public class BitReaderAndWriterTests
         var s = "qwertyuiopasdfghjklzxcvbnm";
         bitWriter.WriteUnicodeString(s);
         bitWriter.Flush();
-        
+
         var data = bitWriter.Array;
         var length = bitWriter.BytesCount;
         length.Should().Be(s.Length * 2 + 1);
@@ -82,5 +83,24 @@ public class BitReaderAndWriterTests
         var result = bitReader.ReadUnicodeString();
         result.Should().Be(s);
         string.IsInterned(result).Should().Be(result);
+    }
+
+    [Fact]
+    public void WriteReadVector3_WithLimit_ShouldBeTheSame()
+    {
+        var vector3Limit = new Vector3Limit(
+            new FloatLimit(-10f, 10f, 0.5f),
+            new FloatLimit(-10f, 10f, 0.5f),
+            new FloatLimit(-70f, 10f, 0.5f));
+
+        var bitWriter = new BitWriter();
+        var vector3 = new Vector3(1,1,1);
+        bitWriter.Write(vector3,vector3Limit);
+        bitWriter.Flush();
+        var bitReader = new BitReader(bitWriter.Array);
+        var readVector3 = bitReader.ReadVector3(vector3Limit);
+        readVector3.X.Should().Be(vector3.X);
+        readVector3.Y.Should().Be(vector3.Y);
+        readVector3.Z.Should().Be(vector3.Z);
     }
 }

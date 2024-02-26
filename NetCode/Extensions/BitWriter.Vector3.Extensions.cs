@@ -13,12 +13,12 @@ public static class BitWriterVector3Extensions
         writer.Write(value.Y);
         writer.Write(value.Z);
     }
-    
+
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void Write(this BitWriter writer, Vector3 value, Vector3Limit limit)
     {
 #if DEBUG
-        if (value.X < limit.X.Min 
+        if (value.X < limit.X.Min
             || value.X > limit.X.Max
             || value.Y < limit.Y.Min
             || value.Y > limit.Y.Max
@@ -28,12 +28,12 @@ public static class BitWriterVector3Extensions
             ThrowHelper.ThrowArgumentOutOfRangeException();
         }
 #endif
-        
+
         writer.Write(value.X, limit.X);
         writer.Write(value.Y, limit.Y);
-        writer.Write(value.Z, limit.Y);
+        writer.Write(value.Z, limit.Z);
     }
-    
+
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void WriteValueIfChanged(this BitWriter writer, Vector3 baseline, Vector3 updated)
     {
