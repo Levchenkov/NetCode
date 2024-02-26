@@ -2,7 +2,7 @@
 
 ### What is NetCode?
 
-Light and Fast bit and byte serialization for .NET Standard 2.0, .NET Standard 2.1, .NET 5, .NET 6 and .NET 7 (Mono, .NET Core, .NET Framework, Unity)
+Light and Fast bit and byte serialization for .NET Standard 2.0, .NET Standard 2.1, .NET 6 and .NET 8 (Mono, .NET Core, .NET Framework, Unity)
 
 ### How do I get started?
 
