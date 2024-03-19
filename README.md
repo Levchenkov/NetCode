@@ -169,9 +169,8 @@ dotnet add package NetCode
 - Supports a lot of frameworks:
   - .NET Standard 2.0
   - .NET Standard 2.1
-  - .NET 5
   - .NET 6
-  - .NET 7
+  - .NET 8
 
 ### Why NetCode?
 

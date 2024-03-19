@@ -1,6 +1,6 @@
 namespace NetCode.Limits;
 
-public sealed class Vector3Limit
+public struct Vector3Limit
 {
     public readonly float Precision;
 

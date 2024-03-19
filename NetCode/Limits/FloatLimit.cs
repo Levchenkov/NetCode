@@ -1,6 +1,6 @@
 ﻿namespace NetCode.Limits;
 
-public sealed class FloatLimit
+public struct FloatLimit
 {
     public readonly float Min;
 
@@ -13,14 +13,14 @@ public sealed class FloatLimit
     public readonly uint MaxIntegerValue;
 
     public readonly int BitCount;
-    
+
     public FloatLimit(float min, float max, float precision)
     {
         if (min >= max)
         {
             ThrowHelper.ThrowArgumentException();
         }
-        
+
         Min = min;
         Max = max;
         Precision = precision;

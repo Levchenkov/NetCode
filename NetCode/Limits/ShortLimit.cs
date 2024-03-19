@@ -1,6 +1,6 @@
 ﻿namespace NetCode.Limits;
 
-public sealed class ShortLimit
+public struct ShortLimit
 {
     public readonly short Min;
 
@@ -14,7 +14,7 @@ public sealed class ShortLimit
         {
             ThrowHelper.ThrowArgumentException();
         }
-        
+
         var range = max - min;
         BitCount = Mathi.BitsRequired((uint)range);
         Min = min;
