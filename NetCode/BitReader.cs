@@ -5,11 +5,11 @@ namespace NetCode;
 public sealed class BitReader : IBitReader
 {
     private static readonly uint[] Masks;
-    
+
     private ByteReader _byteReader;
     private ulong _buffer;
     private int _bitsInBuffer;
-    
+
     static BitReader()
     {
         Masks = new uint[33];
@@ -18,7 +18,7 @@ public sealed class BitReader : IBitReader
             var mask = (1u << i) - 1;
             Masks[i] = mask;
         }
-        
+
         Masks[32] = uint.MaxValue;
     }
 
@@ -36,13 +36,13 @@ public sealed class BitReader : IBitReader
     }
 
     public int Start => _byteReader.Start;
-    
+
     public int End => _byteReader.End;
 
     /// <summary>
     /// Returns the number of bytes and bits that can be read from this instance.
-    /// Example. We read 3 bits from 2 bytes array: 0b_00001111_00001111. Tuple (Bytes: 1, Bits: 5) will be returned. 
-    ///                                                   ^ 
+    /// Example. We read 3 bits from 2 bytes array: 0b_00001111_00001111. Tuple (Bytes: 1, Bits: 5) will be returned.
+    ///                                                   ^
     /// </summary>
     public (int Bytes, int Bits) RemainingToRead
     {
@@ -56,7 +56,7 @@ public sealed class BitReader : IBitReader
 
     /// <summary>
     /// Returns the pointer with current position of reading value.
-    /// Example. We read 3 bits from 2 bytes array: 0b_00001111_00001111. Tuple (Bytes: 0, Bits: 3) will be returned. 
+    /// Example. We read 3 bits from 2 bytes array: 0b_00001111_00001111. Tuple (Bytes: 0, Bits: 3) will be returned.
     ///                                                   ^
     /// </summary>
     public (int Bytes, int Bits) Head
@@ -67,12 +67,37 @@ public sealed class BitReader : IBitReader
 
             if (remainder == 0)
             {
-                return (_byteReader.Head - quotient, 0);    
+                return (_byteReader.Head - quotient, 0);
             }
-            
+
             return (_byteReader.Head - quotient - 1, 8 - remainder);
         }
-    } 
+    }
+
+    /// <summary>
+    /// Returns current position.
+    /// Example. We had offset 1 and read 3 bits from 2 bytes array: 0b_00001111_00001111. Tuple (Bytes: 0, Bits: 3) will be returned.
+    ///                                                                             ^
+    /// </summary>
+    public (int Bytes, int Bits) Position
+    {
+        get
+        {
+            var (quotient, remainder) = Mathi.DivRem(_bitsInBuffer, 8);
+
+            if (remainder == 0)
+            {
+                return (_byteReader.Head - _byteReader.Start - quotient, 0);
+            }
+
+            return (_byteReader.Head - _byteReader.Start - quotient - 1, 8 - remainder);
+        }
+    }
+
+    /// <summary>
+    /// Returns Position.Bytes * 8 + Position.Bits.
+    /// </summary>
+    public int BitsPosition => (_byteReader.Head - _byteReader.Start) * 8 - _bitsInBuffer;
 
     public void SetArray(byte[] data) => SetArray(data, 0);
 
@@ -81,7 +106,7 @@ public sealed class BitReader : IBitReader
     public void SetArray(byte[] data, int start, int length)
     {
         _byteReader.SetArray(data, start, length);
-        
+
         _buffer = 0;
         _bitsInBuffer = 0;
     }
@@ -93,14 +118,14 @@ public sealed class BitReader : IBitReader
         _buffer = 0;
         _bitsInBuffer = 0;
     }
-    
+
     public uint ReadBits(int bitCount)
     {
         if (bitCount > _bitsInBuffer)
         {
             FillBuffer(bitCount);
         }
-        
+
         uint value = (uint)_buffer & Masks[bitCount];
         _buffer >>= bitCount;
         _bitsInBuffer -= bitCount;
@@ -135,7 +160,7 @@ public sealed class BitReader : IBitReader
 
         return (byte)ReadBits(8);
     }
-    
+
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public ushort ReadUShort()
     {
@@ -146,7 +171,7 @@ public sealed class BitReader : IBitReader
 
         return (ushort)ReadBits(16);
     }
-    
+
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public short ReadShort()
     {
@@ -157,7 +182,7 @@ public sealed class BitReader : IBitReader
 
         return (short)ReadBits(16);
     }
-    
+
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public uint ReadUInt()
     {
@@ -168,7 +193,7 @@ public sealed class BitReader : IBitReader
 
         return ReadBits(32);
     }
-    
+
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public int ReadInt()
     {

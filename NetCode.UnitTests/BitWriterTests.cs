@@ -805,5 +805,125 @@ public class BitWriterTests
         bitWriter.Array[4].Should().Be(0b_0000_0001);
     }
 
-    // write and set at BitCount position
+    [Fact]
+    public void Position_ZeroOffset_ShouldBeValid()
+    {
+        var bitWriter = new BitWriter();
+        bitWriter.SetArray(new byte[5], 0);
+
+        bitWriter.Head.Bytes.Should().Be(0);
+        bitWriter.Head.Bits.Should().Be(0);
+        bitWriter.Position.Bytes.Should().Be(0);
+        bitWriter.Position.Bits.Should().Be(0);
+        bitWriter.BitsPosition.Should().Be(0);
+
+        bitWriter.WriteBits(1, 1);
+
+        bitWriter.Head.Bytes.Should().Be(0);
+        bitWriter.Head.Bits.Should().Be(1);
+        bitWriter.Position.Bytes.Should().Be(0);
+        bitWriter.Position.Bits.Should().Be(1);
+        bitWriter.BitsPosition.Should().Be(1);
+
+        bitWriter.WriteBits(6, uint.MaxValue);
+
+        bitWriter.Head.Bytes.Should().Be(0);
+        bitWriter.Head.Bits.Should().Be(7);
+        bitWriter.Position.Bytes.Should().Be(0);
+        bitWriter.Position.Bits.Should().Be(7);
+        bitWriter.BitsPosition.Should().Be(7);
+
+        bitWriter.WriteBits(1, uint.MaxValue);
+
+        bitWriter.Head.Bytes.Should().Be(1);
+        bitWriter.Head.Bits.Should().Be(0);
+        bitWriter.Position.Bytes.Should().Be(1);
+        bitWriter.Position.Bits.Should().Be(0);
+        bitWriter.BitsPosition.Should().Be(8);
+
+        bitWriter.WriteBits(16 + 7, uint.MaxValue); // remains 1 bit in the buffer
+
+        bitWriter.Head.Bytes.Should().Be(3);
+        bitWriter.Head.Bits.Should().Be(7);
+        bitWriter.Position.Bytes.Should().Be(3);
+        bitWriter.Position.Bits.Should().Be(7);
+        bitWriter.BitsPosition.Should().Be(31);
+
+        bitWriter.WriteBits(1, uint.MaxValue);
+
+        bitWriter.Head.Bytes.Should().Be(4);
+        bitWriter.Head.Bits.Should().Be(0);
+        bitWriter.Position.Bytes.Should().Be(4);
+        bitWriter.Position.Bits.Should().Be(0);
+        bitWriter.BitsPosition.Should().Be(32);
+
+        bitWriter.WriteBits(1, uint.MaxValue);
+
+        bitWriter.Head.Bytes.Should().Be(4);
+        bitWriter.Head.Bits.Should().Be(1);
+        bitWriter.Position.Bytes.Should().Be(4);
+        bitWriter.Position.Bits.Should().Be(1);
+        bitWriter.BitsPosition.Should().Be(33);
+
+        bitWriter.WriteBits(7, uint.MaxValue); // remains 0 bits in array
+
+        bitWriter.Head.Bytes.Should().Be(5);
+        bitWriter.Head.Bits.Should().Be(0);
+        bitWriter.Position.Bytes.Should().Be(5);
+        bitWriter.Position.Bits.Should().Be(0);
+        bitWriter.BitsPosition.Should().Be(40);
+    }
+
+    [Fact]
+    public void Position_NonZeroOffset_ShouldBeValid()
+    {
+        var bitWriter = new BitWriter();
+        bitWriter.SetArray(new byte[5], 1);
+
+        bitWriter.Head.Bytes.Should().Be(1);
+        bitWriter.Head.Bits.Should().Be(0);
+        bitWriter.Position.Bytes.Should().Be(0);
+        bitWriter.Position.Bits.Should().Be(0);
+        bitWriter.BitsPosition.Should().Be(0);
+
+        bitWriter.WriteBits(1, 1);
+
+        bitWriter.Head.Bytes.Should().Be(1);
+        bitWriter.Head.Bits.Should().Be(1);
+        bitWriter.Position.Bytes.Should().Be(0);
+        bitWriter.Position.Bits.Should().Be(1);
+        bitWriter.BitsPosition.Should().Be(1);
+
+        bitWriter.WriteBits(6, uint.MaxValue);
+
+        bitWriter.Head.Bytes.Should().Be(1);
+        bitWriter.Head.Bits.Should().Be(7);
+        bitWriter.Position.Bytes.Should().Be(0);
+        bitWriter.Position.Bits.Should().Be(7);
+        bitWriter.BitsPosition.Should().Be(7);
+
+        bitWriter.WriteBits(1, uint.MaxValue);
+
+        bitWriter.Head.Bytes.Should().Be(2);
+        bitWriter.Head.Bits.Should().Be(0);
+        bitWriter.Position.Bytes.Should().Be(1);
+        bitWriter.Position.Bits.Should().Be(0);
+        bitWriter.BitsPosition.Should().Be(8);
+
+        bitWriter.WriteBits(16 + 7, uint.MaxValue); // remains 1 bit in the buffer
+
+        bitWriter.Head.Bytes.Should().Be(4);
+        bitWriter.Head.Bits.Should().Be(7);
+        bitWriter.Position.Bytes.Should().Be(3);
+        bitWriter.Position.Bits.Should().Be(7);
+        bitWriter.BitsPosition.Should().Be(31);
+
+        bitWriter.WriteBits(1, uint.MaxValue);
+
+        bitWriter.Head.Bytes.Should().Be(5);
+        bitWriter.Head.Bits.Should().Be(0);
+        bitWriter.Position.Bytes.Should().Be(4);
+        bitWriter.Position.Bits.Should().Be(0);
+        bitWriter.BitsPosition.Should().Be(32);
+    }
 }

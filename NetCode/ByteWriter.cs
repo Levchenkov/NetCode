@@ -10,6 +10,7 @@ public sealed class ByteWriter : IByteWriter
     private byte[] _data;
     private int _capacity;
     private int _count;
+    private int _start;
 
     public ByteWriter(int capacity = DefaultCapacity):this(new byte[capacity])
     {
@@ -18,9 +19,11 @@ public sealed class ByteWriter : IByteWriter
     public ByteWriter(byte[] data)
     {
         _data = data;
-        _capacity = _data.Length; 
-        _count = 0;
+        _capacity = _data.Length;
+        _start = _count = 0;
     }
+
+    public int Start => _start;
 
     public int Capacity => _capacity;
 
@@ -36,16 +39,16 @@ public sealed class ByteWriter : IByteWriter
         {
             ThrowHelper.ThrowArgumentOutOfRangeException();
         }
-        
+
         _data = data;
         _capacity = _data.Length;
-        _count = offset;
+        _start = _count = offset;
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void Clear()
     {
-        _count = 0;
+         _count = _start;
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -67,7 +70,7 @@ public sealed class ByteWriter : IByteWriter
         {
             value = BinaryPrimitives.ReverseEndianness(value);
         }
-        
+
         WriteInternal(value);
     }
 
@@ -78,7 +81,7 @@ public sealed class ByteWriter : IByteWriter
         {
             value = BinaryPrimitives.ReverseEndianness(value);
         }
-        
+
         WriteInternal(value);
     }
 
@@ -89,10 +92,10 @@ public sealed class ByteWriter : IByteWriter
         {
             value = BinaryPrimitives.ReverseEndianness(value);
         }
-        
+
         WriteInternal(value);
     }
-    
+
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void Write(uint value)
     {
@@ -100,10 +103,10 @@ public sealed class ByteWriter : IByteWriter
         {
             value = BinaryPrimitives.ReverseEndianness(value);
         }
-        
+
         WriteInternal(value);
     }
-    
+
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void Write(long value)
     {
@@ -111,10 +114,10 @@ public sealed class ByteWriter : IByteWriter
         {
             value = BinaryPrimitives.ReverseEndianness(value);
         }
-        
+
         WriteInternal(value);
     }
-    
+
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void Write(ulong value)
     {
@@ -122,7 +125,7 @@ public sealed class ByteWriter : IByteWriter
         {
             value = BinaryPrimitives.ReverseEndianness(value);
         }
-        
+
         WriteInternal(value);
     }
 
@@ -135,7 +138,7 @@ public sealed class ByteWriter : IByteWriter
         {
             ThrowHelper.ThrowIndexOutOfRangeException();
         }
-        
+
         Unsafe.WriteUnaligned(ref _data[_count], value);
         _count += size;
     }

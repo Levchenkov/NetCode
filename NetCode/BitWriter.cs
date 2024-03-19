@@ -41,6 +41,28 @@ public sealed class BitWriter : IBitWriter
 
     public int BytesCount => _byteWriter.Count + Mathi.Ceiling(_bitsInBuffer, 8);
 
+    public (int Bytes, int Bits) Head
+    {
+        get
+        {
+            var (quotient, remainder) = Mathi.DivRem(_bitsInBuffer, 8);
+
+            return (_byteWriter.Count + quotient, remainder);
+        }
+    }
+
+    public (int Bytes, int Bits) Position
+    {
+        get
+        {
+            var (quotient, remainder) = Mathi.DivRem(_bitsInBuffer, 8);
+
+            return (_byteWriter.Count - _byteWriter.Start + quotient, remainder);
+        }
+    }
+
+    public int BitsPosition => (_byteWriter.Count - _byteWriter.Start) * 8 + _bitsInBuffer;
+
     public int Capacity => _byteWriter.Capacity;
 
     public byte[] Array => _bitsInBuffer == 0 ? _byteWriter.Array : throw new InvalidOperationException("Writer should be flushed first.");
