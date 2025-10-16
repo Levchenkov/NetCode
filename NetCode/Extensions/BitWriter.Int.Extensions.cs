@@ -11,20 +11,24 @@ public static class BitWriterIntExtensions
     {
         writer.Write(value, new IntLimit(min, max));
     }
-    
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static void WriteUnsafe(this BitWriter writer, int value, IntLimit limit)
+    {
+        writer.WriteBits(limit.BitCount, (uint)(value - limit.Min));
+    }
+
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void Write(this BitWriter writer, int value, IntLimit limit)
     {
-#if DEBUG
         if (value < limit.Min || value > limit.Max)
         {
             ThrowHelper.ThrowArgumentOutOfRangeException();
         }
-#endif
-        
-        writer.WriteBits(limit.BitCount, (uint)(value - limit.Min));
+
+        writer.WriteUnsafe(value, limit);
     }
-    
+
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void WriteValueIfChanged(this BitWriter writer, int baseline, int updated)
     {
@@ -38,7 +42,7 @@ public static class BitWriterIntExtensions
             writer.Write(updated);
         }
     }
-    
+
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void WriteValueIfChanged(this BitWriter writer, int baseline, int updated, IntLimit limit)
     {
@@ -52,7 +56,7 @@ public static class BitWriterIntExtensions
             writer.Write(updated, limit);
         }
     }
-    
+
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void WriteDiffIfChanged(this BitWriter writer, int baseline, int updated, IntLimit limit, IntLimit diffLimit)
     {
@@ -63,7 +67,7 @@ public static class BitWriterIntExtensions
         else
         {
             writer.Write(true);
-            
+
             var diff = updated - baseline;
 
             if (diffLimit.Min < diff && diff < diffLimit.Max)

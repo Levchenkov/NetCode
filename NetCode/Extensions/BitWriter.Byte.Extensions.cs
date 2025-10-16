@@ -6,18 +6,22 @@ namespace NetCode;
 public static class BitWriterByteExtensions
 {
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static void WriteUnsafe(this BitWriter writer, byte value, ByteLimit limit)
+    {
+        writer.WriteBits(limit.BitCount, (uint)(value - limit.Min));
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void Write(this BitWriter writer, byte value, ByteLimit limit)
     {
-#if DEBUG
         if (value < limit.Min || value > limit.Max)
         {
             ThrowHelper.ThrowArgumentOutOfRangeException();
         }
-#endif
-        
-        writer.WriteBits(limit.BitCount, (uint)(value - limit.Min));
+
+        writer.WriteUnsafe(value, limit);
     }
-    
+
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void WriteValueIfChanged(this BitWriter writer, byte baseline, byte updated)
     {
@@ -31,7 +35,7 @@ public static class BitWriterByteExtensions
             writer.Write(updated);
         }
     }
-    
+
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void WriteValueIfChanged(this BitWriter writer, byte baseline, byte updated, ByteLimit limit)
     {
@@ -45,7 +49,7 @@ public static class BitWriterByteExtensions
             writer.Write(updated, limit);
         }
     }
-    
+
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void WriteDiffIfChanged(this BitWriter writer, byte baseline, byte updated, ByteLimit limit, ByteLimit diffLimit)
     {
@@ -56,7 +60,7 @@ public static class BitWriterByteExtensions
         else
         {
             writer.Write(true);
-            
+
             var diff = (byte)(updated - baseline);
 
             if (diffLimit.Min < diff && diff < diffLimit.Max)

@@ -20,6 +20,7 @@ public class BitReaderAndWriterTests
     public void WriteAndReadTheSameData()
     {
         var array = new byte[100];
+        Array.Fill(array, Byte.MaxValue); // dirty array
         var bitWriter = new BitWriter(array);
 
         bitWriter.WriteBits(19, 0b_10101010_01010101_11110000_00001111);

@@ -22,23 +22,27 @@ public static class BitWriterFloatExtensions
     {
         writer.Write(value, new FloatLimit(min, max, precision));
     }
-    
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static void Write(this BitWriter writer, float value, FloatLimit limit)
-    {
-#if DEBUG
-        if (value < limit.Min || value > limit.Max)
-        {
-            ThrowHelper.ThrowArgumentOutOfRangeException();
-        }
-#endif
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static void WriteUnsafe(this BitWriter writer, float value, FloatLimit limit)
+    {
         float normalizedValue = Mathf.Clamp((value - limit.Min) / limit.Delta, 0, 1);
         uint integerValue = (uint)Math.Floor(normalizedValue * limit.MaxIntegerValue + 0.5f);
 
         writer.WriteBits(limit.BitCount, integerValue);
     }
-    
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static void Write(this BitWriter writer, float value, FloatLimit limit)
+    {
+        if (value < limit.Min || value > limit.Max)
+        {
+            ThrowHelper.ThrowArgumentOutOfRangeException();
+        }
+
+        writer.WriteUnsafe(value, limit);
+    }
+
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void WriteValueIfChanged(this BitWriter writer, float baseline, float updated)
     {
@@ -53,7 +57,7 @@ public static class BitWriterFloatExtensions
             writer.Write(updated);
         }
     }
-    
+
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void WriteValueIfChanged(this BitWriter writer, float baseline, float updated, FloatLimit limit)
     {
@@ -67,7 +71,7 @@ public static class BitWriterFloatExtensions
             writer.Write(updated, limit);
         }
     }
-    
+
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void WriteDiffIfChanged(this BitWriter writer, float baseline, float updated, FloatLimit limit, FloatLimit diffLimit)
     {

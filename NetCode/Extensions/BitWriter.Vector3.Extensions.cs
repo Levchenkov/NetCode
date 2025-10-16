@@ -15,9 +15,16 @@ public static class BitWriterVector3Extensions
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static void WriteUnsafe(this BitWriter writer, Vector3 value, Vector3Limit limit)
+    {
+        writer.WriteUnsafe(value.X, limit.X);
+        writer.WriteUnsafe(value.Y, limit.Y);
+        writer.WriteUnsafe(value.Z, limit.Z);
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void Write(this BitWriter writer, Vector3 value, Vector3Limit limit)
     {
-#if DEBUG
         if (value.X < limit.X.Min
             || value.X > limit.X.Max
             || value.Y < limit.Y.Min
@@ -27,11 +34,8 @@ public static class BitWriterVector3Extensions
         {
             ThrowHelper.ThrowArgumentOutOfRangeException();
         }
-#endif
 
-        writer.Write(value.X, limit.X);
-        writer.Write(value.Y, limit.Y);
-        writer.Write(value.Z, limit.Z);
+        writer.WriteUnsafe(value, limit);
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
